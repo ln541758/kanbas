@@ -113,8 +113,7 @@ export default function AssignmentEditor() {
             <input 
             type="date" 
             id="wd-due" 
-            value="2024-05-13"
-            style={{ width: '80%' }} />
+            value="2024-05-13"/>
           </td>
         </tr>
         <br />
@@ -131,7 +130,6 @@ export default function AssignmentEditor() {
               max="2024-05-19"
               value="2024-05-06"
               style={{ width: '80%' }} />
-            <br />
           </td>
           <td>
             <label htmlFor="wd-available-until"> Until</label>
@@ -143,7 +141,6 @@ export default function AssignmentEditor() {
               max="2050-01-01"
               value="2024-05-20"
               style={{ width: '110%' }} />
-            <br />
           </td>
         </tr>
         <tr>

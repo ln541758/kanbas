@@ -5,9 +5,9 @@ import Courses from "./Courses";
 export default function Kanbas() {
   return (
     <div id="wd-kanbas">
-      <table width="100%">
+      <table>
         <tr>
-          <td valign="top" width="15%">
+          <td valign="top">
             <KanbasNavigation />
           </td>
           <td valign="top">

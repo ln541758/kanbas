@@ -1,6 +1,7 @@
 export default function CoursesNavigation() {
   return (
     <ul id="wd-courses-navigation">
+      <li><a id="wd-neu-link" target="_blank" href="https://www.northeastern.edu/">Northeastern</a></li>
       <li><a id="wd-course-home-link"    href="#/Kanbas/Courses/1234/Home">Home</a></li>
       <li><a id="wd-course-modules-link" href="#/Kanbas/Courses/1234/Modules">Modules</a></li>
       <li><a id="wd-course-piazza-link"  href="#/Kanbas/Courses/1234/Piazza">Piazza</a></li>

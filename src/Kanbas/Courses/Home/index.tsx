@@ -4,14 +4,14 @@ export default function Home() {
   return (
     <table id="wd-home">
       <tr>
-        <td valign="top" width="30%">
+        <td valign="top">
           <Modules />
         </td>
-        <td valign="top" width="15%">
+        <td valign="top">
           <CourseStatus />
         </td>
       </tr>
     </table>
-  );
+  ); 
 }
 
