@@ -10,7 +10,6 @@ export default function Modules() {
       </select>
       <button id="wd-add-module">+ Module</button>
 
-
       <ul id="wd-modules">
         <li className="wd-module">
           <div className="wd-title">Week 1, Lecture 1 - Course Introduction, Syllabus, Agenda</div>

@@ -12,7 +12,7 @@ export default function Courses() {
       <hr />
       <table width="100%">
         <tr>
-          <td valign="top">
+          <td valign="top" >
             <CoursesNavigation />
           </td>
           <td valign="top">
