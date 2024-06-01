@@ -190,6 +190,16 @@ p#id-selector-2 {
     left: 120px;
 }
 
+.wd-pos-fixed {
+    position: fixed;
+    right: 0px;
+    bottom: 50%;
+}
+
+.wd-zindex-bring-to-front {
+    z-index: 10;
+}
+
 .wd-float-left {
     float: left;
 }

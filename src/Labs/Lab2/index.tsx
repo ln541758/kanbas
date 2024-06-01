@@ -15,6 +15,13 @@ import "./index.css";
 import BootstrapGridSystem from "./BootstrapGridSystem";
 import BootstrapResponsiveGrid from "./BootstrapResponsiveGrid";
 import ScreenSizeLabel from "./ScreenSizeLabel";
+import FixedPosition from "./FixedPosition";
+import ZIndex from "./ZIndex";
+import BootstrapTables from "./BootstrapTables";
+import BootstrapResponsiveTables from "./BootstrapResponsiveTables";
+import BootstrapLists from "./BootstrapLists";
+import BootstrapForms from "./BootstrapForms";
+import BootstrapNavigation from "./BootstrapNavigation";
 
 
 export default function Lab2() {
@@ -84,6 +91,8 @@ export default function Lab2() {
             <Dimension />
             <RelativePosition />
             <AbsolutePosition />
+            <FixedPosition />
+            <ZIndex />
             <Float />
             <GridLayout /> 
             <Flex />
@@ -91,7 +100,11 @@ export default function Lab2() {
             <BootstrapGridSystem />
             <BootstrapResponsiveGrid />
             <ScreenSizeLabel />
-
+            <BootstrapTables />
+            <BootstrapResponsiveTables />
+            <BootstrapLists />
+            <BootstrapForms />
+            <BootstrapNavigation />
 
         </div>
     );
