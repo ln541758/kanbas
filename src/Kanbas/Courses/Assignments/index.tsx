@@ -1,4 +1,4 @@
-import { FaEdit, FaPlus } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import AssignmentControl from "./AssignmentControl";
 import { BsGripVertical } from "react-icons/bs";
 import LessonControlButtons from "../Modules/LessonControlButtons";
