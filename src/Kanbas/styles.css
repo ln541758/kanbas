@@ -1,16 +1,53 @@
-body   {  margin: 0;  padding: 0;  }
-body * {  font-family: Arial, Helvetica, sans-serif;  }
+body {
+  margin: 0;
+  padding: 0;
+}
+body * {
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 .btn-secondary {
-    --bs-btn-color: #000;
-    --bs-btn-bg: #c7cdd1;
-    --bs-btn-border-color: #c7cdd1;
-    --bs-btn-hover-color: #fff;
-  }
-  .bg-secondary {
-    background-color: #c7cdd1 !important;
-  }
-  .border-gray {
-    border: 1px solid gray;
-  }
-  
+  --bs-btn-color: #000;
+  --bs-btn-bg: #e5eaee;
+  --bs-btn-border-color: #e5eaee;
+  --bs-btn-hover-color: #fff;
+}
+.bg-secondary {
+  background-color: #e5eaee !important;
+}
+.border-gray {
+  border: 1px solid #d3d8dc;
+}
+
+.light-gray {
+  color: #e5eaee !important;
+}
+
+
+.gray {
+  color: #a4aaae !important;
+}
+
+.button-height {
+  height: 50px;
+}
+
+.wd-lessons {
+  color: black;
+  background-color: white;
+  border-left: 3px solid green !important;
+}
+
+.text-bg-secondary{
+  background-color: #e5eaee !important;
+}
+
+.custom-badge {
+  border: 1px solid #989ca2 !important;
+  padding: 0.5em 1em;
+  font-size: 16px;
+}
+
+.assignment-title {
+  text-decoration: none !important;
+}

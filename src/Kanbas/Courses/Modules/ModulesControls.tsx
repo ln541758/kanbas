@@ -1,6 +1,7 @@
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 import { FaBan } from "react-icons/fa";
+
 export default function ModulesControls() {
   return (
     <div id="wd-modules-controls" className="text-nowrap">
