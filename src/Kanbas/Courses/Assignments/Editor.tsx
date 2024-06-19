@@ -1,4 +1,17 @@
+import {  useNavigate, useParams } from "react-router-dom";
+import * as db from "../../Database";
+
 export default function AssignmentEditor() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const assignments = db.assignments;
+  const assignment = assignments.find((assignment) => assignment._id === id);
+  const name = assignment && assignment._id;
+  const points = assignment && assignment.points;
+  const due = assignment && assignment.due;
+  const available = assignment && assignment.available;
+
+
   return (
     <div id="wd-assignments-editor" className="container">
       <div id="wd-assignment-name" className="mb-4">
@@ -8,7 +21,7 @@ export default function AssignmentEditor() {
         <div id="wd-assignment-name-input">
           <input
             id="wd-name"
-            value="A1"
+            value={name}
             className="border rounded-3 p-3"
             style={{ width: "100%" }}
           />
@@ -58,7 +71,7 @@ export default function AssignmentEditor() {
         >
           <input
             id="wd-name"
-            value="100"
+            value={points}
             className="border rounded-3 p-3"
             style={{ width: "100%" }}
           />
@@ -255,10 +268,10 @@ export default function AssignmentEditor() {
                 Due
               </label>
               <input
-                type="date"
+                type="text"
                 className="form-control"
                 id="due-date"
-                value="2024-05-13"
+                value={due}
                 style={{ marginBottom: "10px" }}
               ></input>
             </div>
@@ -273,10 +286,10 @@ export default function AssignmentEditor() {
                   Available from
                 </label>
                 <input
-                  type="date"
+                  type="text"
                   className="form-control"
                   id="start-date"
-                  value="2024-05-06"
+                  value={available}
                   style={{ marginBottom: "10px" }}
                 ></input>
               </div>
@@ -290,10 +303,10 @@ export default function AssignmentEditor() {
                   Until
                 </label>
                 <input
-                  type="date"
+                  type="text"
                   className="form-control "
                   id="end-date"
-                  value="2024-05-20"
+                  value={due}
                   style={{ marginBottom: "10px" }}
                 ></input>
               </div>
@@ -302,12 +315,12 @@ export default function AssignmentEditor() {
         </div>
       </div>
 
-
       <hr />
       <div id="wd-assignment-buttons" className="d-flex justify-content-end mb-5">
         <button
           id="wd-cancel-assignment-btn"
           className="btn btn-lg btn-secondary me-2 rounded-1 border"
+          onClick={() => navigate(-1)}
         >
           Cancel
         </button>
@@ -315,6 +328,7 @@ export default function AssignmentEditor() {
         <button
           id="wd-save-assignment-btn"
           className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
+          onClick={() => navigate(-1)}
         >
           Save
         </button>

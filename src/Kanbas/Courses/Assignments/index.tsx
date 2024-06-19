@@ -3,8 +3,15 @@ import AssignmentControl from "./AssignmentControl";
 import { BsGripVertical } from "react-icons/bs";
 import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControlButtons from "./AssignmentControlButtons";
+import { Link, useLocation, useParams } from "react-router-dom";
+import * as db from "../../Database";
+
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments;
+  const {pathname} = useLocation()
+
   return (
     <div id="wd-assignments">
       <AssignmentControl />
@@ -43,89 +50,34 @@ export default function Assignments() {
             <AssignmentControlButtons />
           </div>
 
-          <ul
-            id="wd-assignment-info"
-            className="wd-lessons list-group rounded-0"
-          >
-            <li className="d-flex wd-lesson list-group-item p-3 ps-1 align-items-center">
-              <BsGripVertical className="me-2 fs-3" />
-              <FaEdit className="me-2 fs-3" style={{ color: "green" }} />
-              <div className="text-muted ms-3">
-                <a
-                  className="assignment-title text-dark"
-                  href="#/Kanbas/Courses/1234/Assignments/123"
-                >
-                  <h5 className="mb-1 fs-5 fw-bold">A1</h5>
-                </a>
-                <div className="fs-6">
-                  <span className="text-danger">Multiple Modules</span>
-                  <span> | </span>
-                  <span className="fw-bold">Not available until</span>
-                  <span> May 6 at 12:00am | </span>
-                  <br />
-                  <span className="fw-bold">Due</span>
-                  <span> May 13 at 11:59pm | 100 pts</span>
+          {assignments && 
+          assignments.filter((assignment: any) => assignment.course === cid)
+          .map((assignment: any) => (
+            <ul
+              id="wd-assignment-info"
+              className="wd-lessons list-group rounded-0"
+            >
+              <li className="d-flex wd-lesson list-group-item p-3 ps-1 align-items-center">
+                <BsGripVertical className="me-2 fs-3" />
+                <FaEdit className="me-2 fs-3" style={{ color: "green" }} />
+                <div className="text-muted ms-3">
+                    <Link to= {`${pathname}/${assignment._id}`} className="assignment-title text-dark">
+                    <h5 className="mb-1 fs-5 fw-bold">{assignment._id}</h5>
+                    </Link>
+                  <div className="fs-6">
+                    <span className="text-danger">{assignment.title}</span>
+                    <span> | </span>
+                    <span className="fw-bold">Not available until</span>
+                    <span> {assignment.available} | </span>
+                    <br />
+                    <span className="fw-bold">Due</span>
+                    <span> {assignment.due} | {assignment.points} pts</span>
+                  </div>
                 </div>
-              </div>
-              <LessonControlButtons floatEnd={false} />
-            </li>
-          </ul>
-
-          <ul
-            id="wd-assignment-info"
-            className="wd-lessons list-group rounded-0"
-          >
-            <li className="d-flex wd-lesson list-group-item p-3 ps-1 align-items-center">
-              <BsGripVertical className="me-2 fs-3" />
-              <FaEdit className="me-2 fs-3" style={{ color: "green" }} />
-              <div className="text-muted ms-3">
-                <a
-                  className="assignment-title text-dark"
-                  href="#/Kanbas/Courses/1234/Assignments/123"
-                >
-                  <h5 className="mb-1 fs-5 fw-bold">A2</h5>
-                </a>
-                <div className="fs-6">
-                  <span className="text-danger">Multiple Modules</span>
-                  <span> | </span>
-                  <span className="fw-bold">Not available until</span>
-                  <span> May 13 at 12:00am | </span>
-                  <br />
-                  <span className="fw-bold">Due</span>
-                  <span> May 20 at 11:59pm | 100 pts</span>
-                </div>
-              </div>
-              <LessonControlButtons floatEnd={false} />
-            </li>
-          </ul>
-
-          <ul
-            id="wd-assignment-info"
-            className="wd-lessons list-group rounded-0"
-          >
-            <li className="d-flex wd-lesson list-group-item p-3 ps-1 align-items-center">
-              <BsGripVertical className="me-2 fs-3" />
-              <FaEdit className="me-2 fs-3" style={{ color: "green" }} />
-              <div className="text-muted ms-3">
-                <a
-                  className="assignment-title text-dark"
-                  href="#/Kanbas/Courses/1234/Assignments/123"
-                >
-                  <h5 className="mb-1 fs-5 fw-bold">A3</h5>
-                </a>
-                <div className="fs-6">
-                  <span className="text-danger">Multiple Modules</span>
-                  <span> | </span>
-                  <span className="fw-bold">Not available until</span>
-                  <span> May 20 at 12:00am | </span>
-                  <br />
-                  <span className="fw-bold">Due</span>
-                  <span> May 27 at 11:59pm | 100 pts</span>
-                </div>
-              </div>
-              <LessonControlButtons floatEnd={false} />
-            </li>
-          </ul>
+                <LessonControlButtons floatEnd={false} />
+              </li>
+            </ul>
+          ))}
         </li>
       </ul>
     </div>

@@ -1,8 +1,19 @@
 import { CiFilter } from "react-icons/ci";
 import GradesControl from "./GradeControl";
 import { FaSearch } from "react-icons/fa";
+import { useParams } from "react-router";
+import { assignments, enrollments, grades, users } from "../../Database";
 
 export default function Grades() {
+  const { cid } = useParams();
+
+  const enrollment = enrollments.filter(
+    (enrollment: any) => enrollment.course === cid
+  );
+  const assignment = assignments.filter(
+    (assignment: any) => assignment.course === cid
+  );
+
   return (
     <div id="wd-grades" className="container">
       <GradesControl />
@@ -63,83 +74,38 @@ export default function Grades() {
               <th scope="col" className="ps-5 pb-3">
                 Student Name
               </th>
-              <th scope="col" style={{ textAlign: "center" }}>
-                A1 SETUP <br /> Out of 100
-              </th>
-              <th scope="col" style={{ textAlign: "center" }}>
-                A2 HTML <br /> Out of 100
-              </th>
-              <th scope="col" style={{ textAlign: "center" }}>
-                A3 CSS <br /> Out of 100
-              </th>
-              <th scope="col" style={{ textAlign: "center" }}>
-                A4 BOOTSTRAP <br /> Out of 100
-              </th>
+              {assignment.map((assignment) => (
+                <th scope="col" style={{ textAlign: "center" }}>
+                  {assignment.title} <br /> Out of 100
+                </th>
+              ))}
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <th scope="row" className="text-danger ps-5">
-                Jane Adams
-              </th>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>96.67%</td>
-              <td style={{ textAlign: "center" }}>92.18%</td>
-              <td style={{ textAlign: "center" }}>66.22%</td>
-            </tr>
-            <tr>
-              <th scope="row" className="text-danger ps-5">
-                Christina Allen
-              </th>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-            </tr>
-            <tr>
-              <th scope="row" className="text-danger ps-5">
-                Samreen Ansari
-              </th>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-            </tr>
-            <tr>
-              <th scope="row" className="text-danger ps-5">
-                Han Bao
-              </th>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>
-                <input
-                  type="text"
-                  className="border-1 rounded-2 border-danger"
-                  value="88.03%"
-                  style={{ textAlign: "center" }}
-                ></input>
-              </td>
-              <td style={{ textAlign: "center" }}>98.99%</td>
-            </tr>
-            <tr>
-              <th scope="row" className="text-danger ps-5">
-                Mahi Sai Srinivas Bobbilii
-              </th>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>96.69%</td>
-              <td style={{ textAlign: "center" }}>98.37%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-            </tr>
-            <tr>
-              <th scope="row" className="text-danger ps-5">
-                Siran Cao
-              </th>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-              <td style={{ textAlign: "center" }}>100%</td>
-            </tr>
+            {enrollment.map((enroll) => {
+              const user = users.find((user) => user._id === enroll.user);
+              return (
+                <tr>
+                  <th scope="row" className="text-danger ps-5">
+                    {`${user?.firstName} ${user?.lastName}`}
+                  </th>
+
+                  {assignment.map((assign) => {
+                    const grade = grades.find(
+                      (grade) =>
+                        grade.student === user?._id &&
+                        grade.assignment === assign._id
+                    );
+                    return (
+                      <th style={{ textAlign: "center" }} key={assign._id}>
+                        {grade ? grade.grade : "N/A"}
+                      </th>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
