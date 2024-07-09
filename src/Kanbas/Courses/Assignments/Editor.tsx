@@ -1,16 +1,70 @@
-import {  useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as db from "../../Database";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addAssignment, updateAssignment } from "./reducer";
 
 export default function AssignmentEditor() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
   const assignments = db.assignments;
-  const assignment = assignments.find((assignment) => assignment._id === id);
-  const name = assignment && assignment._id;
-  const points = assignment && assignment.points;
-  const due = assignment && assignment.due;
-  const available = assignment && assignment.available;
-
+  const [assignment, setAssignment] = useState(
+    assignments.find((assignment) => assignment._id === id)
+  );
+  const [name, setName] = useState(
+    (assignment && assignment._id) || "New Assignment"
+  );
+  const [title, setTitle] = useState(
+    (assignment && assignment.title) || "New Assignment Title"
+  );
+  const [course, setCourse] = useState(
+    (assignment && assignment.course) || "Course Name"
+  );
+  const [points, setPoints] = useState(
+    (assignment && assignment.points) || "100"
+  );
+  const [due, setDue] = useState(
+    (assignment && assignment.due) || "New Due Date"
+  );
+  const [available, setAvailable] = useState(
+    (assignment && assignment.available) || "New Available Date"
+  );
+  const location = useLocation();
+  const showNewDescription = location.pathname.includes("newAssignments");
+  const defaultContent = (
+    <>
+      <p style={{ marginBottom: "10px" }}>
+        The assignment is <span style={{ color: "red" }}>available online</span>
+      </p>
+      <p style={{ marginBottom: "10px" }}>
+        Submit a link to the landing page of your web application running on
+        Netlify.
+      </p>
+      <p style={{ marginBottom: "10px" }}>
+        The landing page should include the following:
+      </p>
+      <ul style={{ marginBottom: "10px" }}>
+        <li>Your full name and section</li>
+        <li>Links to each of the lab assignments</li>
+        <li>Links to the Kanbas application</li>
+        <li>Links to all relevant source code repositories</li>
+      </ul>
+      <p style={{ marginBottom: "10px" }}>
+        The Kanbas application should include a link to navigate back to the
+        landing page.
+      </p>
+    </>
+  );
+  const newDescription = <p>New Assignment Description</p>;
+  const newAssignment = {
+    _id: new Date().getTime().toString(),
+    title: title,
+    course: course,
+    available: available,
+    due: due,
+    points: points,
+  };
 
   return (
     <div id="wd-assignments-editor" className="container">
@@ -24,33 +78,14 @@ export default function AssignmentEditor() {
             value={name}
             className="border rounded-3 p-3"
             style={{ width: "100%" }}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
       </div>
 
       <div id="wd-description" className="mb-4">
         <div className="border rounded-3 p-3" contentEditable="true">
-          <p style={{ marginBottom: "10px" }}>
-            The assignment is{" "}
-            <span style={{ color: "red" }}>available online</span>
-          </p>
-          <p style={{ marginBottom: "10px" }}>
-            Submit a link to the landing page of your web application running on
-            Netlify.
-          </p>
-          <p style={{ marginBottom: "10px" }}>
-            The landing page should include the following:
-          </p>
-          <ul style={{ marginBottom: "10px" }}>
-            <li>Your full name and section</li>
-            <li>Links to each of the lab assignments</li>
-            <li>Links to the Kanbas application</li>
-            <li>Links to all relevant source code repositories</li>
-          </ul>
-          <p style={{ marginBottom: "10px" }}>
-            The Kanbas application should include a link to navigate back to the
-            landing page.
-          </p>
+          {showNewDescription ? newDescription : defaultContent}
         </div>
       </div>
 
@@ -74,6 +109,7 @@ export default function AssignmentEditor() {
             value={points}
             className="border rounded-3 p-3"
             style={{ width: "100%" }}
+            onChange={(e) => setPoints(e.target.value)}
           />
         </div>
       </div>
@@ -273,6 +309,7 @@ export default function AssignmentEditor() {
                 id="due-date"
                 value={due}
                 style={{ marginBottom: "10px" }}
+                onChange={(e) => setDue(e.target.value)}
               ></input>
             </div>
 
@@ -291,6 +328,7 @@ export default function AssignmentEditor() {
                   id="start-date"
                   value={available}
                   style={{ marginBottom: "10px" }}
+                  onChange={(e) => setAvailable(e.target.value)}
                 ></input>
               </div>
 
@@ -308,6 +346,7 @@ export default function AssignmentEditor() {
                   id="end-date"
                   value={due}
                   style={{ marginBottom: "10px" }}
+                  onChange={(e) => setDue(e.target.value)}
                 ></input>
               </div>
             </div>
@@ -316,7 +355,10 @@ export default function AssignmentEditor() {
       </div>
 
       <hr />
-      <div id="wd-assignment-buttons" className="d-flex justify-content-end mb-5">
+      <div
+        id="wd-assignment-buttons"
+        className="d-flex justify-content-end mb-5"
+      >
         <button
           id="wd-cancel-assignment-btn"
           className="btn btn-lg btn-secondary me-2 rounded-1 border"
@@ -328,7 +370,14 @@ export default function AssignmentEditor() {
         <button
           id="wd-save-assignment-btn"
           className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            if (assignment) {
+              dispatch(updateAssignment({...assignment, ...newAssignment}));
+            } else {
+              dispatch(addAssignment(newAssignment));
+            }
+            navigate(-1);
+          }}
         >
           Save
         </button>

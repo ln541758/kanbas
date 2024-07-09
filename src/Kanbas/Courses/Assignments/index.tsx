@@ -4,13 +4,14 @@ import { BsGripVertical } from "react-icons/bs";
 import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import { Link, useLocation, useParams } from "react-router-dom";
-import * as db from "../../Database";
+import { useSelector } from "react-redux";
 
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const {assignments} = useSelector((state:any) => state.assignmentReducer)
   const {pathname} = useLocation()
+  
 
   return (
     <div id="wd-assignments">
