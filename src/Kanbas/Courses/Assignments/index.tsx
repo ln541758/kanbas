@@ -88,7 +88,7 @@ export default function Assignments() {
                     </div>
                     <AssignmentRightBar
                       floatEnd={false}
-                      assignmentsName={assignments.name}
+                      assignmentsName={assignment._id}
                       deleteAssignment={deleteAssignment}
                     />
                   </li>

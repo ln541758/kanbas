@@ -1,26 +1,19 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import * as db from "../../Database";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
 
 export default function AssignmentEditor() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cid, id } = useParams();
-  const assignments = db.assignments;
-  const [assignment, setAssignment] = useState(
-    assignments.find((assignment) => assignment._id === id)
-  );
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+  const assignment = assignments.find((assignment: any) => assignment._id === id);
   const [name, setName] = useState(
-    (assignment && assignment._id) || "New Assignment"
+    (assignment && assignment.name) || "New Assignment"
   );
-  const [title, setTitle] = useState(
-    (assignment && assignment.title) || "New Assignment Title"
-  );
-  const [course, setCourse] = useState(
-    ((assignment && assignment.course) || cid)
-  );
+  const title = (assignment && assignment.title) || "New Assignment Title";
+  const course = (assignment && assignment.course) || cid;
   const [points, setPoints] = useState(
     (assignment && assignment.points) || "100"
   );
@@ -373,7 +366,7 @@ export default function AssignmentEditor() {
           id="wd-save-assignment-btn"
           className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
           onClick={() => {
-            if (assignment) {
+            if (!showNewDescription) {
               dispatch(updateAssignment({...assignment, ...newAssignment}));
             } else {
               dispatch(addAssignment(newAssignment));
