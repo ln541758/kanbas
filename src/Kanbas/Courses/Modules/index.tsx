@@ -6,8 +6,6 @@ import { useParams } from "react-router";
 import React, { useState } from "react";
 import { addModule, editModule, updateModule, deleteModule } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "../Assignments/reducer";
-import { assignments } from "../../Database";
 
 export default function Modules() {
   const { cid } = useParams();
