@@ -1,17 +1,17 @@
 import { FaEdit } from "react-icons/fa";
 import AssignmentControl from "./AssignmentControl";
 import { BsGripVertical } from "react-icons/bs";
-import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControlButtons from "./AssignmentControlButtons";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import { deleteAssignment } from "./reducer";
+import AssignmentRightBar from "./AssignmentRightBar";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const {assignments} = useSelector((state:any) => state.assignmentReducer)
-  const {pathname} = useLocation()
-  
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div id="wd-assignments">
@@ -51,34 +51,49 @@ export default function Assignments() {
             <AssignmentControlButtons />
           </div>
 
-          {assignments && 
-          assignments.filter((assignment: any) => assignment.course === cid)
-          .map((assignment: any) => (
-            <ul
-              id="wd-assignment-info"
-              className="wd-lessons list-group rounded-0"
-            >
-              <li className="d-flex wd-lesson list-group-item p-3 ps-1 align-items-center">
-                <BsGripVertical className="me-2 fs-3" />
-                <FaEdit className="me-2 fs-3" style={{ color: "green" }} />
-                <div className="text-muted ms-3">
-                    <Link to= {`${pathname}/${assignment._id}`} className="assignment-title text-dark">
-                    <h5 className="mb-1 fs-5 fw-bold">{assignment._id}</h5>
-                    </Link>
-                  <div className="fs-6">
-                    <span className="text-danger">{assignment.title}</span>
-                    <span> | </span>
-                    <span className="fw-bold">Not available until</span>
-                    <span> {assignment.available} | </span>
-                    <br />
-                    <span className="fw-bold">Due</span>
-                    <span> {assignment.due} | {assignment.points} pts</span>
-                  </div>
-                </div>
-                <LessonControlButtons floatEnd={false} />
-              </li>
-            </ul>
-          ))}
+          {assignments &&
+            assignments
+              .filter((assignment: any) => assignment.course === cid)
+              .map((assignment: any) => (
+                <ul
+                  id="wd-assignment-info"
+                  className="wd-lessons list-group rounded-0"
+                >
+                  <li className="d-flex wd-lesson list-group-item p-3 ps-1 align-items-center">
+                    <BsGripVertical className="me-2 fs-3" />
+                    <FaEdit
+                      className="me-2 fs-3"
+                      style={{ color: "green", cursor: "pointer" }}
+                      onClick={() => navigate(`${pathname}/${assignment._id}`)}
+                    />
+                    <div className="text-muted ms-3">
+                      <Link
+                        to={`${pathname}/${assignment._id}`}
+                        className="assignment-title text-dark"
+                      >
+                        <h5 className="mb-1 fs-5 fw-bold">{assignment.name}</h5>
+                      </Link>
+                      <div className="fs-6">
+                        <span className="text-danger">{assignment.title}</span>
+                        <span> | </span>
+                        <span className="fw-bold">Not available until</span>
+                        <span> {assignment.available} | </span>
+                        <br />
+                        <span className="fw-bold">Due</span>
+                        <span>
+                          {" "}
+                          {assignment.due} | {assignment.points} pts
+                        </span>
+                      </div>
+                    </div>
+                    <AssignmentRightBar
+                      floatEnd={false}
+                      assignmentsName={assignments.name}
+                      deleteAssignment={deleteAssignment}
+                    />
+                  </li>
+                </ul>
+              ))}
         </li>
       </ul>
     </div>

@@ -12,9 +12,10 @@ const assignmentsSlice = createSlice({
                 _id: new Date().getTime().toString(),
                 title: assignment.title,
                 course: assignment.course,
-                availability: assignment.availability,
+                available: assignment.available,
                 due: assignment.due,
                 points: assignment.points,
+                name: assignment.name
             };
             state.assignments = [...state.assignments, newAssignment] as any;
         },
@@ -24,7 +25,7 @@ const assignmentsSlice = createSlice({
         },
         updateAssignment: (state, {payload: assignment}) => {
             state.assignments = state.assignments.map((a: any) =>
-                a._id === assignment._id ? assignment : a
+                a._id === assignment.id ? assignment : a
             ) as any;
         },
     },

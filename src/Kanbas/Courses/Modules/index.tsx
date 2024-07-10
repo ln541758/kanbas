@@ -6,6 +6,8 @@ import { useParams } from "react-router";
 import React, { useState } from "react";
 import { addModule, editModule, updateModule, deleteModule } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "../Assignments/reducer";
+import { assignments } from "../../Database";
 
 export default function Modules() {
   const { cid } = useParams();
@@ -66,7 +68,9 @@ export default function Modules() {
                       <li className="wd-lesson list-group-item p-3 ps-1">
                         <BsGripVertical className="me-2 fs-3" />
                         {lesson.name}
-                        <LessonControlButtons floatEnd={true} />
+                        <LessonControlButtons
+                          floatEnd={true}
+                        />
                       </li>
                     ))}
                   </ul>

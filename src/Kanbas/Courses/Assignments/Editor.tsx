@@ -7,7 +7,7 @@ import { addAssignment, updateAssignment } from "./reducer";
 export default function AssignmentEditor() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { cid, id } = useParams();
   const assignments = db.assignments;
   const [assignment, setAssignment] = useState(
     assignments.find((assignment) => assignment._id === id)
@@ -19,7 +19,7 @@ export default function AssignmentEditor() {
     (assignment && assignment.title) || "New Assignment Title"
   );
   const [course, setCourse] = useState(
-    (assignment && assignment.course) || "Course Name"
+    ((assignment && assignment.course) || cid)
   );
   const [points, setPoints] = useState(
     (assignment && assignment.points) || "100"
@@ -58,13 +58,15 @@ export default function AssignmentEditor() {
   );
   const newDescription = <p>New Assignment Description</p>;
   const newAssignment = {
-    _id: new Date().getTime().toString(),
+    _id: id,
     title: title,
     course: course,
     available: available,
     due: due,
     points: points,
+    name: name,
   };
+
 
   return (
     <div id="wd-assignments-editor" className="container">
@@ -381,6 +383,7 @@ export default function AssignmentEditor() {
         >
           Save
         </button>
+        
       </div>
     </div>
   );
