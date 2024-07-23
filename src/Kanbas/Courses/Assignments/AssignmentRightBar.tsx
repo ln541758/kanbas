@@ -3,8 +3,6 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaTrash } from "react-icons/fa";
-import { useDispatch} from "react-redux";
-
 
 export default function LessonControlButtons({
   floatEnd, assignmentsName, deleteAssignment
@@ -13,11 +11,10 @@ export default function LessonControlButtons({
   assignmentsName: string;
   deleteAssignment: (assignmentsName: string) => any;
 }) {
-  const dispatch = useDispatch();
   const handleDelete = () => {
     const isConfirmed = window.confirm("Do you want to delete this assignment?");
         if (isConfirmed) {
-            dispatch(deleteAssignment(assignmentsName));
+            deleteAssignment(assignmentsName);
         }
   }
   return (

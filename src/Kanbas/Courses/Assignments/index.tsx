@@ -3,15 +3,30 @@ import AssignmentControl from "./AssignmentControl";
 import { BsGripVertical } from "react-icons/bs";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { useDispatch, useSelector } from "react-redux";
+import { setAssignments, deleteAssignment } from "./reducer";
 import AssignmentRightBar from "./AssignmentRightBar";
+import * as client from "./client";
+import { useEffect } from "react";
 
 export default function Assignments() {
   const { cid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentReducer);
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const fetchAssignments = async () => {
+    const assignments = await client.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const removeAssignment = async (assignmentId: string) => {
+    await client.deleteAssignment(assignmentId);
+    dispatch(deleteAssignment(assignmentId));
+  };
 
   return (
     <div id="wd-assignments">
@@ -89,7 +104,7 @@ export default function Assignments() {
                     <AssignmentRightBar
                       floatEnd={false}
                       assignmentsName={assignment._id}
-                      deleteAssignment={deleteAssignment}
+                      deleteAssignment={removeAssignment}
                     />
                   </li>
                 </ul>

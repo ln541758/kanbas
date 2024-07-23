@@ -2,6 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
+import * as client from "./client";
 
 export default function AssignmentEditor() {
   const navigate = useNavigate();
@@ -59,6 +60,15 @@ export default function AssignmentEditor() {
     points: points,
     name: name,
   };
+  const createAssignment = async (assignment: any) => {
+    const newAssignment = await client.createAssignment(cid as string, assignment);
+    dispatch(addAssignment(newAssignment));
+  };
+  const saveAssignment = async (assignment: any) => {
+    await client.updateAssignment(assignment);
+    dispatch(updateAssignment(assignment));
+  };
+
 
 
   return (
@@ -367,9 +377,9 @@ export default function AssignmentEditor() {
           className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
           onClick={() => {
             if (!showNewDescription) {
-              dispatch(updateAssignment({...assignment, ...newAssignment}));
+              saveAssignment({...assignment, ...newAssignment});
             } else {
-              dispatch(addAssignment(newAssignment));
+              createAssignment(newAssignment);
             }
             navigate(-1);
           }}
