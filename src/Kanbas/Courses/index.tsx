@@ -8,6 +8,7 @@ import { FaAlignJustify } from "react-icons/fa";
 import Grades from "./Grades";
 import store from "../store";
 import { Provider } from "react-redux";
+import PeopleTable from "./People/Table";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
@@ -34,6 +35,8 @@ export default function Courses({ courses }: { courses: any[] }) {
               <Route path="Assignments" element={<Assignments />} />
               <Route path="Assignments/:id" element={<AssignmentEditor />} />
               <Route path="Grades" element={<Grades />} />
+              <Route path="People" element={<PeopleTable />} />
+              <Route path="People/:uid" element={<PeopleTable />} />
             </Routes>
           </div>
         </div>
