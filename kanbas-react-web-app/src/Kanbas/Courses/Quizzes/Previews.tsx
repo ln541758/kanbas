@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios"; // Use axios for HTTP requests
+import { useSelector } from "react-redux";
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 const QUIZZES_API = `${REMOTE_SERVER}/api/quizzes`;
@@ -39,11 +40,14 @@ interface Quiz {
   questions: Question[];
   status: string;
   courses: string;
-  maxAttempts: number;
+  howManyAttempts: number;
 }
 
 export default function QuizPreview() {
-  const [role, setRole] = useState("student"); // Set default role to student
+  // const [role, setRole] = useSSTUDENT"); // Set default role STUDENT
+  // retrieve the current user from the Redux store
+  const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const role = currentUser.role;
   const { cid, qid } = useParams<{ cid: string; qid: string  }>();
   const navigate = useNavigate();
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -85,7 +89,7 @@ export default function QuizPreview() {
   };
 
   const handleSubmit = async () => {
-    if (quiz && attempts < quiz.maxAttempts) {
+    if (quiz && attempts < quiz.howManyAttempts) {
       try {
         // Calculate the score
         let calculatedScore = 0;
@@ -123,7 +127,7 @@ export default function QuizPreview() {
   return (
     <div className="container">
       <h1>Quiz Preview: {quiz.title}</h1>
-      {role === "faculty" && (
+      {role === "FACULTY" && (
         <button onClick={handleEditClick} className="btn btn-secondary">
           Edit Quiz
         </button>
@@ -152,7 +156,7 @@ export default function QuizPreview() {
                     value={option}
                     checked={answers[question.questionId] === option}
                     onChange={() => handleAnswerChange(question.questionId, option)}
-                    disabled={score !== null || role === "faculty"}
+                    disabled={score !== null || role === "FACULTY"}
                   />
                   {option}
                 </label>
@@ -164,7 +168,7 @@ export default function QuizPreview() {
                 onChange={(e) =>
                   handleAnswerChange(question.questionId, e.target.value)
                 }
-                disabled={score !== null || role === "faculty"}
+                disabled={score !== null || role === "FACULTY"}
               />
             )}
             {score !== null && (
@@ -183,17 +187,17 @@ export default function QuizPreview() {
           </div>
         ))}
       </div>
-      {role === "student" && (
+      {role === "STUDENT" && (
         <>
           <button
             onClick={handleSubmit}
-            disabled={score !== null || attempts >= quiz.maxAttempts}
+            disabled={score !== null || attempts >= quiz.howManyAttempts}
             className="btn btn-primary"
           >
             Submit
           </button>
           {score !== null && <div>Your score: {score}</div>}
-          <div>Attempts left: {quiz.maxAttempts - attempts}</div>
+          <div>Attempts left: {quiz.howManyAttempts - attempts}</div>
         </>
       )}
     </div>

@@ -8,7 +8,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
 
 export default function QuizDetailScreen() {
-    const [role, setRole] = useState("faculty"); // Set role to facaulty by default
+    // const [role, setRole] = useState("faculty"); // Set role to facaulty by default
+    // retrieve the current user from the Redux store
+    const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const role = currentUser.role;
     const { cid, qid } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -24,29 +27,6 @@ export default function QuizDetailScreen() {
         fetchQuiz();
     }, []);
 
-    // return (
-    //     <div id="wd-quiz-detail-screen">
-    //         <div id="wd-quiz-detail-screen-buttons" className="text-center m-2 p-2">
-    //             <button className="btn btn-secondary me-4">Preview</button>
-    //             <Link
-    //             className="wd-quiz-editor-link"
-    //             to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/editing`}>
-    //             <button className="btn btn-secondary">
-    //             <FaPencil className="position-relative me-2" style={{ bottom: "1px" }} />
-    //             Edit</button></Link>
-    //             <hr/>
-
-    //         </div>
-    //         <div id="wd-quiz-detail-screen-right" className="text-center">
-    //         {quiz._id + " " + quiz.title}
-
-    //         </div>
-    //     </div>
-    // );
-
-
-
-    // from Lin
     if (!quiz) {
         return <div className="alert alert-danger">No quiz found</div>;
       }
@@ -59,7 +39,7 @@ export default function QuizDetailScreen() {
       };
 
       const handleQuizClick = () => {
-        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`); // Path to quiz page
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Preview`); // Path to quiz page
       };
 
       const renderFacultyControls = () => {
@@ -173,7 +153,7 @@ export default function QuizDetailScreen() {
 
       return (
         <div>
-          {role === "faculty" ? renderFacultyControls() : renderStudentControls()}
+          {role === "FACULTY" ? renderFacultyControls() : renderStudentControls()}
         </div>
       );
 }
