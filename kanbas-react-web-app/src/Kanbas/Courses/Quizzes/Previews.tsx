@@ -12,7 +12,7 @@ interface Question {
   questionPoints: string;
   questionContent: string;
   options?: string[];
-  CorrectAns: string | boolean;
+  CorrectAns: string | boolean | string[];
   questionDifficulty: string;
 }
 
@@ -98,7 +98,9 @@ export default function QuizPreview() {
         // Calculate the score
         let calculatedScore = 0;
         quiz.questions.forEach((question) => {
-          if (answers[question.questionId] === question.CorrectAns) {
+          if ((answers[question.questionId] === question.CorrectAns) ||
+            (Array.isArray(question.CorrectAns) &&
+              question.CorrectAns.includes(String(answers[question.questionId])))) {
             calculatedScore += parseInt(question.questionPoints);
           }
         });
@@ -139,7 +141,7 @@ export default function QuizPreview() {
       <div>
         {quiz.questions.map((question) => (
           <div key={question.questionId} className="mb-3">
-            <p>{question.questionContent}</p>
+            <p>{question.questionId}. {question.questionContent}</p>
             {question.questionType === "Multiple Choice" && question.options ? (
               question.options.map((option, index) => (
                 <label
@@ -149,8 +151,8 @@ export default function QuizPreview() {
                       ? option === question.CorrectAns
                         ? "text-success"
                         : answers[question.questionId] === option
-                        ? "text-danger"
-                        : ""
+                          ? "text-danger"
+                          : ""
                       : ""
                   }
                 >
@@ -205,12 +207,16 @@ export default function QuizPreview() {
             {score !== null && (
               <span
                 className={
-                  answers[question.questionId] === question.CorrectAns
+                  (answers[question.questionId] === question.CorrectAns) ||
+                    (Array.isArray(question.CorrectAns) &&
+                      question.CorrectAns.includes(String(answers[question.questionId])))
                     ? "text-success"
                     : "text-danger"
                 }
               >
-                {answers[question.questionId] === question.CorrectAns
+                {(answers[question.questionId] === question.CorrectAns) ||
+                  (Array.isArray(question.CorrectAns) &&
+                    question.CorrectAns.includes(String(answers[question.questionId])))
                   ? "✓ Correct"
                   : "✗ Incorrect"}
               </span>
