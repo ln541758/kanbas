@@ -1,0 +1,27 @@
+
+.wd-quizzes-add-question-custom-radio {
+    display: none;
+}
+
+.wd-add-question-custom-arrow {
+    display: none;
+}
+
+.wd-quizzes-add-question-custom-label {
+    font-size: 1.2em;
+}
+
+.wd-quizzes-add-question-custom-radio:checked + .wd-quizzes-add-question-custom-label .wd-add-question-custom-arrow{
+    display: inline-block;
+    color: green;
+}
+
+.wd-quizzes-add-question-custom-radio:checked + .wd-quizzes-add-question-custom-label {
+    color: green;
+}
+
+
+
+#wd-add-question-delete-element-click {
+    cursor: pointer;
+}

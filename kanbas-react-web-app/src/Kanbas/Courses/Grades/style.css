@@ -1,0 +1,33 @@
+.table-bordered {
+    border-collapse: collapse;
+
+}
+
+.table-bordered td, .table-bordered th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 20px;
+
+}
+
+.table-bordered td:first-child, .table-bordered th:first-child {
+    text-align: left;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+    background-color: grey;
+}
+
+.table-grade-text {
+    font-weight: normal;
+    font-size: 20px;
+    color: black;
+}
+
+.table-name-text {
+    font-weight: normal;
+    font-size: 20px;
+    color:red;
+}
