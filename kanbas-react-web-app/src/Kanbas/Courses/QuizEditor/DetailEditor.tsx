@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuiz } from "../Quizzes/reducer";
 import * as client from "../Quizzes/client";
@@ -8,68 +8,66 @@ export default function DetailEditor() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cid, qid } = useParams();
-  const quiz = useSelector((state: any) => state.quizzesReducer.quiz);
-  const [title, setTitle] = useState(quiz && quiz.title);
-  const [instruction, setInstruction] = useState(quiz && quiz.description);
-  const [points, setPoints] = useState(quiz && quiz.points);
-  const [type, setType] = useState(quiz && quiz.type);
-  const [group, setGroup] = useState(quiz && quiz.assignmentGroup);
-  const [shuffle, setShuffle] = useState(quiz && quiz.shuffleAnswers);
-  const [timeEnabled, setTimeEnabled] = useState(false);
-  const [time, setTime] = useState(quiz && quiz.timeLimit);
-  const [multiple, setMultiple] = useState(quiz && quiz.multipleAttempts);
-  const [due, setDue] = useState(quiz && quiz.due);
-  const [from, setFrom] = useState(quiz && quiz.availableFrom);
-  const [until, setUntil] = useState(quiz && quiz.availableUntil);
-  const [attempts, setAttempts] = useState(0);
-  const newQuiz = {
-    _id: qid,
-    title: title,
-    description: instruction,
-    type: type,
-    points: points,
-    timeLimit: time,
-    assignmentGroup: group,
-    shuffleAnswers: shuffle,
-    multipleAttempts: multiple,
-    howManyAttempts: attempts,
-    availableFrom: from,
-    availableUntil: until,
-    due: due,
-  };
+  const { quizzes, quiz } = useSelector((state: any) => state.quizzesReducer);
 
-  const fetchQuiz = async () => {
-    const quiz = await client.findQuizById(qid as string);
-    dispatch(setQuiz(quiz));
-};
 
-  const handleQuizTypeChange = (event: any) => {
-    setType(event.target.value);
-  };
+  const fetchQuiz = async (id: string) => {
+    try {
+      const fetchedQuiz = await client.findQuizById(id);
+      if (fetchedQuiz) {
+        dispatch(setQuiz(fetchedQuiz));
+      } else {
+        console.warn("Quiz not found");
 
-  const handleQuizGroupChange = (event: any) => {
-    setGroup(event.target.value);
-  };
+      }
+    } catch (error) {
+      console.error("Error fetching quiz:", error);
 
-  const saveQuiz = async (quiz: any) => {
-    const updateQuiz = await client.updateQuiz(quiz);
-    dispatch(setQuiz(updateQuiz));
+    }
   };
 
   useEffect(() => {
-    if (quiz) {
-      setTimeEnabled(quiz.timeLimit > 0);
-    };
-    fetchQuiz();
-  }, [quiz]);
+    if (cid !== qid) {
+      fetchQuiz(qid as string);
+    }
+  }, [cid, qid]);
+
+  const handleQuizTypeChange = (event: any) => {
+    dispatch(setQuiz({ ...quiz, type: event.target.value }));
+  };
+
+  const handleQuizGroupChange = (event: any) => {
+    dispatch(setQuiz({ ...quiz, assignmentGroup: event.target.value }));
+  };
+console.log(quizzes.length);
+
+const saveQuiz = async (quiz: any) => {
+  try {
+    if (quiz._id === cid) {
+      const newQuizId = quizzes.length + "a";
+      const aQuiz = { ...quiz, _id: newQuizId };
+      const createdQuiz = await client.createQuiz(aQuiz);
+      dispatch(setQuiz(createdQuiz));
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/${newQuizId}/quizDetailScreen`);
+      window.location.reload();
+    } else {
+      const updatedQuiz = await client.updateQuiz(quiz);
+      dispatch(setQuiz(updatedQuiz));
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/quizDetailScreen`);
+      window.location.reload();
+    }
+  } catch (error) {
+    console.error("Error saving quiz:", error);
+  }
+};
 
   return (
     <div className="container">
       <input
-        value={title}
+        value={quiz?.title || ""}
         className="border rounded-3 p-3 mb-4"
         style={{ width: "100%" }}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => dispatch(setQuiz({ ...quiz, title: e.target.value }))}
       />
 
       <div className="mb-4">
@@ -77,33 +75,35 @@ export default function DetailEditor() {
         <textarea
           id="wd-quiz-instruction"
           className="form-control border rounded-3 p-3"
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
+          value={quiz?.description || ""}
+          onChange={(e) =>
+            dispatch(setQuiz({ ...quiz, description: e.target.value }))
+          }
           style={{ height: "150px" }}
         />
       </div>
 
       <div className="row mb-4 d-flex justify-content-end">
-        <label
-          htmlFor="wd-quiz-point-input"
-          className="d-flex col-form-label col-sm-2 me-3 align-items-center justify-content-end"
-        >
-          Points
-        </label>
-        <div
-          id="wd-quiz-point-input"
-          className="d-flex col-sm-9"
-          contentEditable="true"
-        >
-          <input
-            id="wd-name"
-            value={points}
-            className="border rounded-3 p-3"
-            style={{ width: "100%" }}
-            onChange={(e) => setPoints(Number(e.target.value))}
-          />
-        </div>
-      </div>
+  <label
+    htmlFor="wd-quiz-point-input"
+    className="d-flex col-form-label col-sm-2 me-3 align-items-center justify-content-end"
+  >
+    Points
+  </label>
+  <div id="wd-quiz-point-input" className="d-flex col-sm-9">
+    <input
+      id="wd-name"
+      type="number"
+      value={quiz?.points || ""}
+      className="border rounded-3 p-3"
+      style={{ width: "100%" }}
+      onChange={(e) =>
+        dispatch(setQuiz({ ...quiz, points: Number(e.target.value) }))
+      }
+    />
+  </div>
+</div>
+
 
       <div className="row mb-4 d-flex justify-content-end">
         <label
@@ -115,7 +115,7 @@ export default function DetailEditor() {
         <div id="wd-quiz-type-select" className="d-flex col-sm-9 ">
           <select
             className="form-select border rounded-3 p-3"
-            value={type}
+            value={quiz?.type || ""}
             onChange={handleQuizTypeChange}
           >
             <option value="GRADEQUIZ">Graded Quiz</option>
@@ -136,7 +136,7 @@ export default function DetailEditor() {
         <div id="wd-quiz-group-select" className="d-flex col-sm-9 ">
           <select
             className="form-select border rounded-3 p-3"
-            value={group}
+            value={quiz?.assignmentGroup || ""}
             onChange={handleQuizGroupChange}
           >
             <option value="QUIZZES">Quizzes</option>
@@ -156,8 +156,12 @@ export default function DetailEditor() {
           <input
             type="checkbox"
             className="me-2"
-            checked={shuffle}
-            onChange={() => setShuffle(!shuffle)}
+            checked={quiz?.shuffleAnswers || false}
+            onChange={() =>
+              dispatch(
+                setQuiz({ ...quiz, shuffleAnswers: !quiz?.shuffleAnswers })
+              )
+            }
           />{" "}
           Shuffle Answers
         </div>
@@ -170,8 +174,12 @@ export default function DetailEditor() {
             <input
               type="checkbox"
               className="form-check-input me-2"
-              checked={timeEnabled}
-              onChange={() => setTimeEnabled(!timeEnabled)}
+              checked={quiz?.timeLimit > 0}
+              onChange={() =>
+                dispatch(
+                  setQuiz({ ...quiz, timeLimit: quiz?.timeLimit > 0 ? 0 : 30 })
+                )
+              }
             />{" "}
             <label htmlFor="wd-quiz-time-limit" className="form-check-label">
               Time Limit
@@ -180,44 +188,62 @@ export default function DetailEditor() {
           <div className="input-group w-50 mb-2">
             <input
               id="wd-quiz-time-input"
-              value={time}
+              value={quiz?.timeLimit || 0}
               className="form-control"
-              onChange={(e) => setTime(Number(e.target.value))}
-              disabled={!timeEnabled}
+              onChange={(e) =>
+                dispatch(
+                  setQuiz({ ...quiz, timeLimit: Number(e.target.value) })
+                )
+              }
+              disabled={quiz?.timeLimit === 0}
             />
             <span className="input-group-text">Minutes</span>
           </div>
         </div>
         <div className="d-flex flex-column col-sm-9 border rounded-3 p-3">
-      <div className="d-flex align-items-center">
-        <input
-          type="checkbox"
-          className="me-2"
-          checked={multiple}
-          onChange={() => setMultiple(!multiple)}
-        />
-        <label htmlFor="wd-quiz-multiple-attempts">
-          Allow Multiple Attempts
-        </label>
-      </div>
+          <div className="d-flex align-items-center">
+            <input
+              type="checkbox"
+              className="me-2"
+              checked={quiz?.multipleAttempts || false}
+              onChange={() =>
+                dispatch(
+                  setQuiz({
+                    ...quiz,
+                    multipleAttempts: !quiz?.multipleAttempts,
+                  })
+                )
+              }
+            />
+            <label htmlFor="wd-quiz-multiple-attempts">
+              Allow Multiple Attempts
+            </label>
+          </div>
 
-      {multiple && (
-        <div className="mt-3">
-          <label htmlFor="attempts-input" className="form-label">
-            How Many Attempts
-          </label>
-          <input
-            type="number"
-            className="form-control"
-            id="attempts-input"
-            placeholder="Enter number of attempts"
-            aria-label="Number of attempts"
-            value={attempts}
-            onChange={(e) => setAttempts(Number(e.target.value))}
-          />
+          {quiz?.multipleAttempts && (
+            <div className="mt-3">
+              <label htmlFor="attempts-input" className="form-label">
+                How Many Attempts
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="attempts-input"
+                placeholder="Enter number of attempts"
+                aria-label="Number of attempts"
+                value={quiz?.howManyAttempts || 0}
+                onChange={(e) =>
+                  dispatch(
+                    setQuiz({
+                      ...quiz,
+                      howManyAttempts: Number(e.target.value),
+                    })
+                  )
+                }
+              />
+            </div>
+          )}
         </div>
-      )}
-    </div>
       </div>
 
       <div
@@ -246,7 +272,7 @@ export default function DetailEditor() {
                 id="assign-to"
                 value="Everyone"
                 data-role="tagsinput"
-              ></input>
+              />
             </div>
 
             <div>
@@ -261,10 +287,12 @@ export default function DetailEditor() {
                 type="text"
                 className="form-control"
                 id="due-date"
-                value={due}
+                value={quiz?.due || ""}
                 style={{ marginBottom: "10px" }}
-                onChange={(e) => setDue(e.target.value)}
-              ></input>
+                onChange={(e) =>
+                  dispatch(setQuiz({ ...quiz, due: e.target.value }))
+                }
+              />
             </div>
 
             <div className="d-flex">
@@ -280,10 +308,12 @@ export default function DetailEditor() {
                   type="text"
                   className="form-control"
                   id="start-date"
-                  value={from}
+                  value={quiz?.availableFrom || ""}
                   style={{ marginBottom: "10px" }}
-                  onChange={(e) => setFrom(e.target.value)}
-                ></input>
+                  onChange={(e) =>
+                    dispatch(setQuiz({ ...quiz, availableFrom: e.target.value }))
+                  }
+                />
               </div>
 
               <div className="col-sm-6 ps-2">
@@ -298,15 +328,18 @@ export default function DetailEditor() {
                   type="text"
                   className="form-control "
                   id="end-date"
-                  value={due}
+                  value={quiz?.availableUntil || ""}
                   style={{ marginBottom: "10px" }}
-                  onChange={(e) => setUntil(e.target.value)}
-                ></input>
+                  onChange={(e) =>
+                    dispatch(setQuiz({ ...quiz, availableUntil: e.target.value }))
+                  }
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <hr />
       <div id="wd-quiz-buttons" className="d-flex justify-content-end mb-5">
         <button
@@ -319,14 +352,22 @@ export default function DetailEditor() {
 
         <button
           id="wd-save-quiz-btn"
-          className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
+          className="btn btn-lg btn-danger text-white me-2 rounded-1 border"
           onClick={() => {
-            saveQuiz({ ...quiz, ...newQuiz });
-            navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/quizDetailScreen`);
-            window.location.reload();
+            saveQuiz(quiz);
           }}
         >
           Save
+        </button>
+
+        <button
+          id="wd-save-quiz-publish-btn"
+          className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
+          onClick={() => {
+            saveQuiz({ ...quiz, published: true });
+          }}
+        >
+          Save & Publish
         </button>
       </div>
     </div>

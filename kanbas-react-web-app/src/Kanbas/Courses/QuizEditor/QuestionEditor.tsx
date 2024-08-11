@@ -47,6 +47,7 @@ export default function QuestionEditor() {
             ...quiz,
             questions: updatedQuestions,
             points: totalPoints,
+            questionsNum: updatedQuestions.length,
         };
 
         dispatch(setQuiz(updatedQuiz));
@@ -129,7 +130,7 @@ export default function QuestionEditor() {
             <div className="modal-dialog modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h1 className="modal-title fs-5" id="staticBackdropLabel">{quiz.questions.some((question: any) => question.questionId === newQuestion.questionId)
+                        <h1 className="modal-title fs-5" id="staticBackdropLabel">{quiz && quiz.questions.some((question: any) => question.questionId === newQuestion.questionId)
                                 ? 'Update Question'
                                 : 'Add Question'}</h1>
                         <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
@@ -195,7 +196,7 @@ export default function QuestionEditor() {
                             className="btn btn-danger"
                             onClick={() => addOrUpdateQuestion(quiz, newQuestion)}
                         >
-                            {quiz.questions.some((question: any) => question.questionId === newQuestion.questionId)
+                            {quiz && quiz.questions.some((question: any) => question.questionId === newQuestion.questionId)
                                 ? 'Update Question'
                                 : 'Add Question'}
                         </button>

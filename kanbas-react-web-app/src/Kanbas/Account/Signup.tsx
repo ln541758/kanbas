@@ -29,6 +29,16 @@ export default function Signup() {
                 className="wd-username form-control mb-2" placeholder="username" />
             <input value={user.password} onChange={(e) => setUser({ ...user, password: e.target.value })} type="password"
                 className="wd-password form-control mb-2" placeholder="password" />
+                <input value={user.firstName} onChange={(e) => setUser({...user, firstName: e.target.value})}
+                   className="wd-password form-control mb-2" placeholder="firstName"/>
+            <input value={user.lastName} onChange={(e) => setUser({...user, lastName: e.target.value})}
+                   className="wd-password form-control mb-2" placeholder="lastName"/>
+            <select value={user.role} className="wd-role form-control mb-2"
+            onChange={(e) => setUser({...user, role: e.target.value})}>
+                <option value="" disabled selected hidden>Select your role</option>
+                <option value={"STUDENT"}>STUDENT</option>
+                <option value={"FACULTY"}>FACULTY</option>
+            </select>
             <button onClick={signup} className="wd-signup-btn btn btn-primary mb-2"> Sign up </button><br />
             <Link to="/Kanbas/Account/Signin" className="wd-signin-link">Sign in</Link>
         </div>

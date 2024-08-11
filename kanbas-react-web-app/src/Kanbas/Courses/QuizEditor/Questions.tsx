@@ -43,7 +43,7 @@ export default function Questions() {
     return (
         <div id="wd-quizzes-question" className="text-nowrap">
             <div className="row row-cols-1 row-cols-md-5 g-4">
-                {quiz.questions.map((question: any) => (
+                {quiz && quiz.questions.map((question: any) => (
                     <div className="wd-quiz-questionscreen col" style={{ width: "600px" }}>
                         <div className="card rounded-3 overflow-hidden">
                             <div className="card-body">
