@@ -23,4 +23,18 @@ export default function QuizRoutes(app) {
         };
         res.sendStatus(204);
     });
+
+    app.post("/api/quizzes", (req, res) => {
+        const quiz = req.body;
+        db.quizzes.push(quiz);
+        res.json(quiz);
+    });
+
+    app.delete("/api/quizzes/:qid", (req, res) => {
+        const {qid} = req.params;
+        const quizIndex = db.quizzes.findIndex(
+            (m) => m._id === qid);
+        db.quizzes.splice(quizIndex, 1);
+        res.sendStatus(204);
+    });
 }

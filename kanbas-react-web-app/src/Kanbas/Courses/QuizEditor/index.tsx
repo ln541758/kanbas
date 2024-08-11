@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-do
 import Tab from "./Tab";
 import Questions from "./Questions";
 import { useSelector } from "react-redux";
+import DetailEditor from "./DetailEditor";
 
 
 export default function QuizEditor() {
@@ -32,7 +33,7 @@ export default function QuizEditor() {
         <div className="col-12">
           <Routes>
             <Route path="/" element={<Navigate to="Details" />} />
-            <Route path="Details" element={<h1>Details</h1>} />
+            <Route path="Details" element={<DetailEditor/>} />
             <Route path="Questions" element={<Questions />} />
           </Routes>
         </div>
