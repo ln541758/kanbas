@@ -19,7 +19,7 @@ export default function TOC() {
         </a>
       </li>
       <li className="nav-item">
-        <a id="wd-k" href="https://github.com/ln541758/web_final" className="nav-link">
+        <a id="wd-k" href="https://github.com/ln541758/web_final/quiz-project" className="nav-link">
           GitHub Repo
         </a>
       </li>
