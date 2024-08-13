@@ -4,16 +4,17 @@ import quizzes from "../../Database/quizzes.json";
 import { FaPencilAlt } from "react-icons/fa";
 
 export default function QuizDetails() {
-  const [role, setRole] = useState("faculty"); // Set role to facaulty by default
+  const [role, setRole] = useState("student"); // Set role to facaulty by default
   const { cid, qid } = useParams();
   const quiz = quizzes.find((quiz) => quiz._id === qid);
   const navigate = useNavigate();
+  const [accessCodeInput, setAccessCodeInput] = useState("");
 
   if (!quiz) {
     return <div className="alert alert-danger">No quiz found</div>;
   }
   const handleEditClick = () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Editor`); // Path to edit page
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Details`); // Path to edit page
   };
 
   const handlePreviewClick = () => {
@@ -21,7 +22,12 @@ export default function QuizDetails() {
   };
 
   const handleQuizClick = () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`); // Path to quiz page
+    const requiredAccessCode = quiz.accessCode;
+    if (accessCodeInput === requiredAccessCode) {
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Preview`); // Path to preview page
+    } else {
+      alert("Incorrect access code. Please try again.");
+    }
   };
 
   const renderFacultyControls = () => {
@@ -68,6 +74,15 @@ export default function QuizDetails() {
                 label: "Multiple Attempts",
                 value: quiz.multipleAttempts ? "Yes" : "No",
               },
+              ...(quiz.multipleAttempts
+                ? [
+                    {
+                      label: "Attempts Allowed",
+                      value: quiz.attemptsAllowed,
+                    },
+                  ]
+                : []),
+              { label: "Access Code", value: quiz.accessCode },
               { label: "View Responses", value: quiz.viewResponses },
               { label: "Show Correct Answers", value: quiz.showCorrectAnswers },
               {
@@ -123,6 +138,13 @@ export default function QuizDetails() {
 
   const renderStudentControls = () => (
     <div className="d-flex justify-content-center">
+      <input
+        type="text"
+        className="form-control me-2 w-50"
+        placeholder="Enter access code"
+        value={accessCodeInput}
+        onChange={(e) => setAccessCodeInput(e.target.value)}
+      />
       <button
         type="button"
         className="btn btn-secondary"
