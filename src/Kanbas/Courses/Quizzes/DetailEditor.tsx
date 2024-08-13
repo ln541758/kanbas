@@ -1,14 +1,26 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setQuiz } from "./reducer";
+import { setQuiz, setQuizzes } from "./reducer";
 import * as client from "./client";
 import quizzes from "../../Database/quizzes.json";
+import {
+  BtnBold,
+  BtnItalic,
+  Editor,
+  EditorProvider,
+  Toolbar,
+  BtnUnderline,
+  BtnBulletList,
+  BtnClearFormatting,
+  BtnLink,
+  BtnStyles,
+} from "react-simple-wysiwyg";
 
 export default function DetailEditor() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { qid } = useParams();
+  const { cid, qid } = useParams();
   const quiz = quizzes.find((quiz: any) => quiz._id === qid);
   const [title, setTitle] = useState(quiz && quiz.title);
   const [instruction, setInstruction] = useState(quiz && quiz.description);
@@ -16,9 +28,23 @@ export default function DetailEditor() {
   const [type, setType] = useState(quiz && quiz.type);
   const [group, setGroup] = useState(quiz && quiz.assignmentGroup);
   const [shuffle, setShuffle] = useState(quiz && quiz.shuffleAnswers);
+  const [showCorrect, setShowCorrect] = useState(
+    quiz && quiz.showCorrectAnswers
+  );
   const [timeEnabled, setTimeEnabled] = useState(false);
   const [time, setTime] = useState(quiz && quiz.timeLimit);
   const [multiple, setMultiple] = useState(quiz && quiz.multipleAttempts);
+  const [attempt, setAttempt] = useState(quiz && quiz.attemptsAllowed);
+  const [code, setCode] = useState(quiz && quiz.accessCode);
+  const [oneQuestion, setOneQuestion] = useState(
+    quiz && quiz.oneQuestionAtATime
+  );
+  const [webcamRequired, setWebcamRequired] = useState(
+    quiz && quiz.webcamRequired
+  );
+  const [lockQuestion, setLockQuestion] = useState(
+    quiz && quiz.lockQuestionsAfterAnswering
+  );
   const [due, setDue] = useState(quiz && quiz.due);
   const [from, setFrom] = useState(quiz && quiz.availableFrom);
   const [until, setUntil] = useState(quiz && quiz.availableUntil);
@@ -56,6 +82,15 @@ export default function DetailEditor() {
     dispatch(setQuiz(updateQuiz));
   };
 
+  const publishQuiz = async (courseId: any) => {
+    const publishQuiz = await client.findQuizzesForCourse(courseId);
+    dispatch(setQuizzes(publishQuiz));
+  };
+
+  const handleInstructionChange = (event: any) => {
+    setInstruction(event.target.value);
+  };
+
   return (
     <div className="container">
       <input
@@ -66,14 +101,23 @@ export default function DetailEditor() {
       />
 
       <div className="mb-4">
-        <label htmlFor="wd-quiz-instruction">Quiz Instructions:</label>
-        <textarea
-          id="wd-quiz-instruction"
-          className="form-control border rounded-3 p-3"
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          style={{ height: "150px" }}
-        />
+        <EditorProvider>
+          <Editor
+            value={instruction}
+            onChange={handleInstructionChange}
+            style={{ height: "300px" }}
+          >
+            <Toolbar>
+              <BtnBold style={{ marginRight: "6px" }} />
+              <BtnItalic style={{ marginRight: "6px" }} />
+              <BtnUnderline style={{ marginRight: "6px" }} />
+              <BtnBulletList style={{ marginRight: "6px" }} />
+              <BtnClearFormatting style={{ marginRight: "6px" }} />
+              <BtnLink style={{ marginRight: "6px" }} />
+              <BtnStyles style={{ marginRight: "6px" }} />
+            </Toolbar>
+          </Editor>
+        </EditorProvider>
       </div>
 
       <div className="row mb-4 d-flex justify-content-end">
@@ -154,6 +198,66 @@ export default function DetailEditor() {
           />{" "}
           Shuffle Answers
         </div>
+
+        <div id="wd-quiz-one-question" className="d-flex col-sm-9 mb-2">
+          <input
+            type="checkbox"
+            className="me-2"
+            checked={oneQuestion}
+            onChange={() => setOneQuestion(!oneQuestion)}
+          />{" "}
+          One Question at a Time
+        </div>
+
+        <div id="wd-quiz-webcam-question" className="d-flex col-sm-9 mb-2">
+          <input
+            type="checkbox"
+            className="me-2"
+            checked={webcamRequired}
+            onChange={() => setWebcamRequired(!webcamRequired)}
+          />{" "}
+          Webcam Required
+        </div>
+
+        <div id="wd-quiz-lock-question" className="d-flex col-sm-9 mb-2">
+          <input
+            type="checkbox"
+            className="me-2"
+            checked={lockQuestion}
+            onChange={() => setLockQuestion(!lockQuestion)}
+          />{" "}
+          Lock Questions After Answering
+        </div>
+
+        <div
+          id="wd-quiz-correct-answers"
+          className="d-flex col-sm-9 justify-content-between"
+        >
+          <div>
+            <input
+              type="checkbox"
+              className="me-2"
+              checked={showCorrect === "Immediately"}
+              onChange={() =>
+                setShowCorrect(
+                  showCorrect === "Immediately" ? "Later" : "Immediately"
+                )
+              }
+            />{" "}
+            <label htmlFor="wd-quiz-correct-answers">
+              Show Correct Answers:
+            </label>
+          </div>
+          <div className="input-group w-50 mb-2 float-end">
+            <input
+              id="wd-quiz-correct-answers-input"
+              value={showCorrect}
+              className="form-control"
+              onChange={(e) => setAttempt(Number(e.target.value))}
+            />
+          </div>
+        </div>
+
         <div
           id="wd-quiz-time-limit"
           className="d-flex justify-content-between col-sm-9 mb-2"
@@ -181,16 +285,49 @@ export default function DetailEditor() {
             <span className="input-group-text">Minutes</span>
           </div>
         </div>
-        <div className="d-flex col-sm-9 border rounded-3 p-3">
-          <input
-            type="checkbox"
-            className="me-2"
-            checked={multiple}
-            onChange={() => setMultiple(!multiple)}
-          />{" "}
-          <label htmlFor="wd-quiz-multiple-attempts">
-            Allow Multiple Attempts
-          </label>
+        <div className="d-flex col-sm-9 border rounded-3 p-3 justify-content-between">
+          <div>
+            <input
+              type="checkbox"
+              className="me-2"
+              checked={multiple}
+              onChange={() => setMultiple(!multiple)}
+            />{" "}
+            <label htmlFor="wd-quiz-multiple-attempts">
+              Allow Multiple Attempts
+            </label>
+          </div>
+          <div className="input-group w-50 mb-2 float-end">
+            <input
+              id="wd-attempt-time-input"
+              value={attempt}
+              className="form-control"
+              onChange={(e) => setAttempt(Number(e.target.value))}
+              disabled={!multiple}
+            />
+            <span className="input-group-text">Times</span>
+          </div>
+        </div>
+
+        <div className="d-flex col-sm-9 rounded-3 p-3 justify-content-between">
+          <div>
+            <input
+              type="checkbox"
+              className="me-2"
+              checked={code !== ""}
+              onChange={() => setCode(code === "" ? "1234" : "")}
+            />{" "}
+            <label htmlFor="wd-quiz-multiple-attempts">Access Code</label>
+          </div>
+          <div className="input-group w-50 mb-2 float-end">
+            <input
+              id="wd-attempt-time-input"
+              value={code}
+              className="form-control"
+              onChange={(e) => setAttempt(Number(e.target.value))}
+              disabled={code === " "}
+            />
+          </div>
         </div>
       </div>
 
@@ -286,7 +423,7 @@ export default function DetailEditor() {
         <button
           id="wd-cancel-quiz-btn"
           className="btn btn-lg btn-secondary me-2 rounded-1 border"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes`)}
         >
           Cancel
         </button>
@@ -296,9 +433,22 @@ export default function DetailEditor() {
           className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
           onClick={() => {
             saveQuiz({ ...quiz, ...newQuiz });
+            navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
           }}
         >
           Save
+        </button>
+
+        <button
+          id="wd-save-quiz-btn"
+          className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
+          onClick={() => {
+            saveQuiz({ ...quiz, ...newQuiz });
+            publishQuiz({ cid });
+            navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+          }}
+        >
+          Save and Publish
         </button>
       </div>
     </div>
