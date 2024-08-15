@@ -16,6 +16,7 @@ export default function QuizDetailScreen() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { quiz } = useSelector((state: any) => state.quizzesReducer);
+  const [accessCodeInput, setAccessCodeInput] = useState("");
 
   const fetchQuiz = async () => {
     const quiz = await client.findQuizById(qid as string);
@@ -37,7 +38,14 @@ export default function QuizDetailScreen() {
   };
 
   const handleQuizClick = () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Preview`); // Path to quiz page
+    const requiredAccessCode = quiz.accessCode;
+    if (accessCodeInput === requiredAccessCode) {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Preview`);  // Path to quiz page
+    }
+    else {
+      alert("Incorrect access code. Please try again.");
+    }
+
   };
 
   const renderFacultyControls = () => {
@@ -87,6 +95,7 @@ export default function QuizDetailScreen() {
                 value: quiz.multipleAttempts ? "Yes" : "No",
               },
               { label: "How Many Attempts", value: quiz.howManyAttempts },
+              { label: "Access Code", value: quiz.accessCode },
               { label: "View Responses", value: quiz.viewResponses },
               { label: "Show Correct Answers", value: quiz.showCorrectAnswers },
               {
@@ -142,6 +151,13 @@ export default function QuizDetailScreen() {
 
   const renderStudentControls = () => (
     <div className="d-flex justify-content-center">
+      <input
+        type="text"
+        className="form-control me-2 w-50"
+        placeholder="Enter access code"
+        value={accessCodeInput}
+        onChange={(e) => setAccessCodeInput(e.target.value)}
+      />
       <button
         type="button"
         className="btn btn-secondary"

@@ -15,6 +15,7 @@ import { useEffect } from "react";
 export default function Assignments() {
     const { cid } = useParams();
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const dispatch = useDispatch();
 
 
@@ -35,8 +36,7 @@ export default function Assignments() {
 
     return (
         <div id="wd-assignments">
-
-            <AssignmentControl />
+            {currentUser.role === "FACULTY" &&(<AssignmentControl />)}
             <li className="wd-assignment-list list-group-item p-0 m-5 fs-5 border-gray ">
                 <div className="wd-title p-3 ps-2 bg-secondary align-items-center">
                     <div className="icon-container">
@@ -78,11 +78,12 @@ export default function Assignments() {
                                         <span style={{ fontWeight: "bold" }}>Due</span> {assignment.dueDate} | points: {assignment.points}
                                     </p>
                                 </div>
+                                {currentUser.role === "FACULTY" && (
                                 <div className="col-2">
                                     <AssignmentControlButtons
                                         assignmentId={assignment._id}
                                         deleteAssignment={(assignmentId) => removeAssignment(assignmentId)} />
-                                </div>
+                                </div>)}
                             </div>
 
                         </li>

@@ -6,6 +6,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { FaCheckCircle, FaRocket } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { setQuizzes, setQuiz, addQuiz, clearQuiz } from "./reducer";
+import { FaBan } from "react-icons/fa";
 
 
 export default function Quizzes() {
@@ -109,7 +110,7 @@ export default function Quizzes() {
                                                     <FaCheckCircle className="text-success me-2 fs-4"
                                                         onClick={(e) => { handlePublishQuiz(m) }} />
                                                 ) : (
-                                                    <FaCheckCircle className="text-muted me-2 fs-4"
+                                                    <FaBan className="text-danger me-2 fs-4"
                                                         onClick={(e) => { handlePublishQuiz(m) }} />)}
                                                 <IoEllipsisVertical
                                                     className="fs-3 text-muted cursor-pointer"
@@ -131,8 +132,6 @@ export default function Quizzes() {
                                             </div>
                                         )}
                                     </div>
-
-
                                 </div>
                             </li>
                         ))}

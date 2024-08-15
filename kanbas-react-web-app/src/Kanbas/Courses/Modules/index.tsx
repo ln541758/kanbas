@@ -5,12 +5,14 @@ import LessonControlButtons from "./LessonControlButtons";
 import { BsGripVertical } from "react-icons/bs";
 import { useParams } from "react-router";
 import { addModule, editModule, updateModule, deleteModule, setModules } from "./reducer";
-import {useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as client from "./client";
+import { current } from "@reduxjs/toolkit";
 
 export default function Modules() {
   const { cid } = useParams();
-  const {modules} = useSelector((state: any) => state.modulesReducer);
+  const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [moduleName, setModuleName] = useState("");
   const dispatch = useDispatch();
 
@@ -42,12 +44,14 @@ export default function Modules() {
 
   return (
     <div id="wd-modules">
-      <ModulesControls setModuleName={setModuleName}
-        moduleName={moduleName}
-        addModule={() => {
-          createModule({ name: moduleName, course: cid });
-          setModuleName("");
-        }} /><br /><br /><br /><br />
+      {currentUser.role === "FACULTY" && (
+        <div>
+          <ModulesControls setModuleName={setModuleName}
+            moduleName={moduleName}
+            addModule={() => {
+              createModule({ name: moduleName, course: cid });
+              setModuleName("");
+            }} /><br /><br /><br /><br /></div>)}
       <ul id="wd-modules" className="list-group rounded-0">
         {modules && modules.filter((module: any) => module.course ===
           cid).map((module: any) => (
@@ -65,13 +69,14 @@ export default function Modules() {
                     }}
                     value={module.name} />
                 )}
-
-                <ModuleControlButtons
-                  moduleId={module._id}
-                  deleteModule={(moduleId) => {
-                    removeModule(moduleId);
-                  }}
-                  editModule={(moduleId) => dispatch(editModule(moduleId))} />
+                {currentUser.role === "FACULTY" && (
+                  <ModuleControlButtons
+                    moduleId={module._id}
+                    deleteModule={(moduleId) => {
+                      removeModule(moduleId);
+                    }}
+                    editModule={(moduleId) => dispatch(editModule(moduleId))} />
+                )}
               </div>
               {module.lessons && (
                 <ul className="wd-lessons list-group rounded-0 border-5 border-start border-success">

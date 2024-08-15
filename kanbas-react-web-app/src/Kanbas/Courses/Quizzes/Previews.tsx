@@ -199,9 +199,9 @@ export default function QuizPreview() {
                 type="text"
                 value={(answers[question.questionId] as string) || ""}
                 onChange={(e) =>
-                  handleAnswerChange(question.questionId, e.target.value)
+                  handleAnswerChange(question.questionId, e.target.value.toLowerCase())
                 }
-                disabled={score !== null || role === "FACULTY"}
+                // disabled={score !== null || role === "FACULTY"}
               />
             )}
             {score !== null && (

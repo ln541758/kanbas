@@ -3,6 +3,18 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuiz } from "../Quizzes/reducer";
 import * as client from "../Quizzes/client";
+import {
+  BtnBold,
+  BtnItalic,
+  Editor,
+  EditorProvider,
+  Toolbar,
+  BtnUnderline,
+  BtnBulletList,
+  BtnClearFormatting,
+  BtnLink,
+  BtnStyles,
+} from "react-simple-wysiwyg";
 
 export default function DetailEditor() {
   const navigate = useNavigate();
@@ -71,16 +83,24 @@ const saveQuiz = async (quiz: any) => {
       />
 
       <div className="mb-4">
-        <label htmlFor="wd-quiz-instruction">Quiz Instructions:</label>
-        <textarea
-          id="wd-quiz-instruction"
-          className="form-control border rounded-3 p-3"
-          value={quiz?.description || ""}
-          onChange={(e) =>
-            dispatch(setQuiz({ ...quiz, description: e.target.value }))
-          }
-          style={{ height: "150px" }}
-        />
+          <EditorProvider>
+          <Editor
+            value={quiz?.description || ""}
+            onChange={(e) =>
+              dispatch(setQuiz({ ...quiz, description: e.target.value }))}
+            style={{ height: "300px" }}
+          >
+            <Toolbar>
+              <BtnBold style={{ marginRight: "6px" }} />
+              <BtnItalic style={{ marginRight: "6px" }} />
+              <BtnUnderline style={{ marginRight: "6px" }} />
+              <BtnBulletList style={{ marginRight: "6px" }} />
+              <BtnClearFormatting style={{ marginRight: "6px" }} />
+              <BtnLink style={{ marginRight: "6px" }} />
+              <BtnStyles style={{ marginRight: "6px" }} />
+            </Toolbar>
+          </Editor>
+        </EditorProvider>
       </div>
 
       <div className="row mb-4 d-flex justify-content-end">
@@ -165,9 +185,63 @@ const saveQuiz = async (quiz: any) => {
           />{" "}
           Shuffle Answers
         </div>
+
+        <div id="wd-quiz-one-question" className="d-flex col-sm-9 mb-2">
+          <input
+            type="checkbox"
+            className="me-2"
+            checked={quiz?.oneQuestionAtATime || false}
+            onChange={(e) =>
+              dispatch(setQuiz({ ...quiz, oneQuestionAtATime: !quiz?.oneQuestionAtATime }))}
+          />{" "}
+          One Question at a Time
+        </div>
+
+        <div id="wd-quiz-webcam-question" className="d-flex col-sm-9 mb-2">
+          <input
+            type="checkbox"
+            className="me-2"
+            checked={quiz?.webcamRequired || false}
+            onChange={(e) =>
+              dispatch(setQuiz({ ...quiz, webcamRequired: !quiz?.webcamRequired }))}
+          />{" "}
+          Webcam Required
+        </div>
+
+        <div id="wd-quiz-lock-question" className="d-flex col-sm-9 mb-2">
+          <input
+            type="checkbox"
+            className="me-2"
+            checked={quiz?.lockQuestionsAfterAnswering || false}
+            onChange={(e) =>
+              dispatch(setQuiz({ ...quiz, lockQuestionsAfterAnswering:
+                !quiz?.lockQuestionsAfterAnswering }))}
+          />{" "}
+          Lock Questions After Answering
+        </div>
+
+        <div
+          id="wd-quiz-correct-answers"
+          className="d-flex col-sm-9 justify-content-between"
+        >
+
+            <label className="col-3"
+            htmlFor="wd-quiz-correct-answers">
+              Show Correct Answers:
+            </label>
+            <select value={quiz.showCorrectAnswers}
+            className="form-select border rounded-3"
+            onChange={(e) => dispatch(setQuiz({ ...quiz, showCorrectAnswers: e.target.value }))}>
+              <option value="" disabled selected hidden>Show Correct Answers?</option>
+              <option value="Immediately">Immediately</option>
+              <option value="Later">Later</option>
+              </select>
+
+        </div>
+
         <div
           id="wd-quiz-time-limit"
-          className="d-flex justify-content-between col-sm-9 mb-2"
+          className="d-flex justify-content-between col-sm-9 mb-2 mt-2"
         >
           <div>
             {" "}
@@ -244,6 +318,18 @@ const saveQuiz = async (quiz: any) => {
             </div>
           )}
         </div>
+        <div className="d-flex col-sm-9 rounded-3 p-3 justify-content-between">
+
+          <label htmlFor="wd-quiz-multiple-attempts">Access Code</label>
+            <input
+              type="text"
+              className="form-control me-2"
+              value={quiz.accessCode}
+              onChange={(e) => dispatch(setQuiz({ ...quiz, accessCode: e.target.value }))}
+            />{" "}
+
+
+          </div>
       </div>
 
       <div
@@ -365,6 +451,7 @@ const saveQuiz = async (quiz: any) => {
           className="btn btn-lg btn-danger text-white me-3 rounded-1 border"
           onClick={() => {
             saveQuiz({ ...quiz, published: true });
+            navigate(`/Kanbas/Courses/${cid}/Quizzes`);
           }}
         >
           Save & Publish

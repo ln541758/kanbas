@@ -44,7 +44,7 @@ export default function FillInBlankAns() {
                                             type="text"
                                             className="form-control ms-2"
                                             style={{ width: '200px' }}
-                                            value={item}
+                                            value={item.toLowerCase()}
                                             onChange={(event) => handleInputChange(event, index)}
                                         />
                                     </label>

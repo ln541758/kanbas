@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { time } from "console";
 
 
 const initialState = {
@@ -58,6 +59,10 @@ const quizzesSlice = createSlice({
         _id: cid,
         courses: cid,
         title: "abc",
+        shuffleAnswers: true,
+        howManyAttempts: 1,
+        timeLimit: 20,
+        oneQuestionAtATime: true,
       }
       state.quiz = newQuiz;
       setQuiz(newQuiz);
