@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios"; // Use axios for HTTP requests
 import { useSelector } from "react-redux";
+
+import * as clientAccount from "../People/client";
+
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 const QUIZZES_API = `${REMOTE_SERVER}/api/quizzes`;
@@ -55,6 +58,7 @@ export default function QuizPreview() {
     {}
   );
   const [score, setScore] = useState<number | null>(null);
+  const [lastScore, setLastScore] = useState<number | null>(null);
   const [attempts, setAttempts] = useState<number>(0);
 
   useEffect(() => {
@@ -64,18 +68,21 @@ export default function QuizPreview() {
         const response = await axios.get(`${QUIZZES_API}/${qid}`);
         const quizData = response.data;
         setQuiz(quizData);
-        console.log(cid);
-        console.log(qid);
 
-        //Fetch previous attempts and score
-        const attemptsResponse = await axios.get(
-          `${QUIZZES_API}/${qid}/attempts`
-        );
-        const attemptsData = attemptsResponse.data;
 
-        if (attemptsData) {
-          setAttempts(attemptsData.attempts);
-          setScore(attemptsData.score);
+        //Fetch previous attempts and score from current user
+        const examinee = await clientAccount.findUserById(currentUser._id);
+        const foundRecord = examinee.record.find((record: any) => record.quizId === qid);
+        console.log("foundRecord", foundRecord);
+        console.log("examinee.record", examinee.record);
+        console.log("qid", qid);
+
+
+        if (foundRecord) {
+          setAttempts(foundRecord.attempts);
+          // setScore(foundRecord.score);
+          setAnswers(foundRecord.answers);
+          setLastScore(foundRecord.score);
         }
       } catch (error) {
         console.error("Error fetching quiz data:", error);
@@ -106,20 +113,29 @@ export default function QuizPreview() {
         });
         setScore(calculatedScore);
 
-        // Submit the answers and score to the server
-        await axios.post(`${QUIZZES_API}/${qid}/submit`, {
-          answers,
-          score: calculatedScore,
-        });
-
         // Update the number of attempts
         setAttempts((prevAttempts) => prevAttempts + 1);
+
+
+        // Update the user record
+        const newRecord = {
+          quizId: qid,
+          attempts: attempts + 1,
+          score: calculatedScore,
+          answers: answers,
+        };
+        const updatedUser = { ...currentUser, record: [...currentUser.record.filter((record: any) => record.quizId !== qid), newRecord] };
+        // Update the user record in the server
+        await axios.put(`${REMOTE_SERVER}/api/users/${currentUser._id}`, updatedUser);
+
+
       } catch (error) {
         console.error("Error submitting quiz:", error);
       }
     } else {
       alert("You have exhausted your attempts.");
     }
+
   };
 
   const handleEditClick = () => {
@@ -132,7 +148,7 @@ export default function QuizPreview() {
 
   return (
     <div className="container">
-      <h1>Quiz Preview: {quiz.title}</h1>
+      <h1>{currentUser.role === "STUDENT" ? quiz.type : "Preview"}: {quiz.title}</h1>
       {role === "FACULTY" && (
         <button onClick={handleEditClick} className="btn btn-secondary">
           Edit Quiz
@@ -201,7 +217,7 @@ export default function QuizPreview() {
                 onChange={(e) =>
                   handleAnswerChange(question.questionId, e.target.value.toLowerCase())
                 }
-                // disabled={score !== null || role === "FACULTY"}
+              // disabled={score !== null || role === "FACULTY"}
               />
             )}
             {score !== null && (
@@ -237,6 +253,7 @@ export default function QuizPreview() {
           <div>Attempts left: {quiz.howManyAttempts - attempts}</div>
         </>
       )}
+        {lastScore !== null && <div>The score of you last try: {lastScore}</div>}
     </div>
   );
 }

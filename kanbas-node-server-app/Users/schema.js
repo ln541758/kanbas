@@ -16,6 +16,20 @@ const userSchema = new mongoose.Schema({
     section: String,
     lastActivity: Date,
     totalActivity: String,
+    record: [
+      {
+        quizId: String,
+        attempts: Number,
+        score: Number,
+        answers: {
+          type: Map,
+          of: {
+            type: mongoose.Schema.Types.Mixed, // Allows either String or Boolean
+          },
+          default: {}, // Default value is an empty object
+        },
+      },
+    ],
   },
   { collection: "users" }
 );
