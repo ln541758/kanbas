@@ -67,7 +67,8 @@ export default [{
     }
   ],
   "courses": "RS101",
-  "published": false
+  "published": false,
+  "accessCode": "1234"
 },
 {
   "_id": "2",
@@ -138,7 +139,8 @@ export default [{
   ],
   "courses": "RS101",
   "howManyAttempts": 0,
-  "published": true
+  "published": true,
+  "accessCode": "1234"
 },
 {
   "_id": "3",
@@ -209,7 +211,8 @@ export default [{
   ],
   "courses": "RS101",
   "howManyAttempts": 0,
-  "published": true
+  "published": true,
+  "accessCode": "1234"
 },
 {
   "_id": "4",
@@ -280,7 +283,8 @@ export default [{
   ],
   "courses": "RS101",
   "howManyAttempts": 0,
-  "published": true
+  "published": true,
+  "accessCode": "1234"
 },
 {
   "_id": "5",
@@ -351,7 +355,8 @@ export default [{
   ],
   "courses": "RS102",
   "howManyAttempts": 0,
-  "published": false
+  "published": false,
+  "accessCode": "1234"
 },
 {
   "_id": "6",
@@ -418,7 +423,8 @@ export default [{
   ],
   "courses": "RS102",
   "howManyAttempts": 0,
-  "published": false
+  "published": false,
+  "accessCode": "1234"
 },
 {
   "_id": "7",
@@ -489,7 +495,8 @@ export default [{
   ],
   "courses": "RS102",
   "howManyAttempts": 0,
-  "published": false
+  "published": false,
+  "accessCode": "1234"
 },
 {
   "_id": "8",
@@ -560,5 +567,6 @@ export default [{
   ],
   "courses": "RS102",
   "howManyAttempts": 0,
-  "published": false
+  "published": false,
+  "accessCode": "1234"
 }]
